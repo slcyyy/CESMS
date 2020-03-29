@@ -1,44 +1,32 @@
 <template>
   <div>
-    <el-table
-      :data="tableData"
-      :span-method="objectSpanMethod"
-      border
-      style="width: 100%; margin-top: 20px">
-      <el-table-column
-        prop="id"
-        label="存储区域"
-        width="180">
-      </el-table-column>
-			<el-table-column
-        prop="id"
-        label="化学品名"
-        width="">
-      </el-table-column>
-      <el-table-column
-        prop="name"
-        label="余量">
-      </el-table-column>
-      <el-table-column
-        prop="amount1"
-        label="临界值">
-      </el-table-column>
-      <el-table-column
-        prop="amount2"
-        label="辨识指标">
-      </el-table-column>
-      <el-table-column
-        prop="amount3"
-        label="是否为重大危险源">
-      </el-table-column>
-    </el-table>
+    <BreadCrumbNavi>
+      <template #secondPath>风险管理</template>
+      <template #thirdPath>重大危险源识别和分级</template>
+    </BreadCrumbNavi>
+    <el-tabs v-model="activeName">
+    <el-tab-pane label="重大危险源辨识结果" name="first">
+      <Identify></Identify>
+    </el-tab-pane>
+    <el-tab-pane label="重大危险源分级" name="second">
+      <Classify></Classify>  
+    </el-tab-pane> 
+    <el-tab-pane label="辨识/分级依据" name="third">
+      <Basis></Basis>
+    </el-tab-pane>
+  </el-tabs>
   </div>
 </template>
 
 <script>
+import BreadCrumbNavi from '@/components/globalChildComp/breadCrumbNavi'
+import Identify from '@/components/riskManage/majorHazChild/identify'
+import Classify from  '@/components/riskManage/majorHazChild/classify'
+import Basis from '@/components/riskManage/majorHazChild/basis'
 export default {
  data(){
 	 return{
+     activeName: 'first',
 		  tableData: [{
           id: '12987122',
           name: '王小虎',
@@ -71,6 +59,12 @@ export default {
           amount3: 15
         }]
       };
+    },
+    components:{
+      BreadCrumbNavi,
+      Identify,
+      Classify,
+      Basis
     },
     methods: {
       arraySpanMethod({ row, column, rowIndex, columnIndex }) {

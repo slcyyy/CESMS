@@ -94,7 +94,7 @@ export default {
       window.open(routeUrl.href, '_blank')
     },
     async getSeletList() {
-      const { data: res } = await this.$http.get('/grade/selectList')
+      const { data: res } = await this.$http.get('/grade/EvaTSelectData')
       if (res.meta.err == -1) return
       this.selectList = res.selectList
     },

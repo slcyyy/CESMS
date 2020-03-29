@@ -100,7 +100,7 @@ export default {
   background-color: #545c64;
 }
 .el-main {
-  background-color:	#ffffff;
+  background-color:#F5F5FE
 }
 .el-menu{
   border-right:none;

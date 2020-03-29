@@ -1,5 +1,11 @@
 <template>
   <div class= "dataset">
+    <BreadCrumbNavi></BreadCrumbNavi>
+    <p v-if="tip"></p>
+    <div v-else style="margin-bottom:20px">
+      <span>已上传的评分表：</span>
+      <a :href="fileUrl">评分表.xlsx</a>
+    </div>
     <el-tag type="warning" style="width:100%;">请将文件名命名为“评分表”,文件格式为xlsx</el-tag>
     <el-upload
       class="upload"
@@ -17,22 +23,52 @@
         style="margin-left: 10px;"
         size="small"
         type="success"
-        @click="upload"
+        @click="dialogVisible=true"
         >上传到服务器</el-button>
         <div slot="tip" class="el-upload__tip">只能上传1个xlsx文件</div>
        </el-upload>
-    
+      <el-dialog
+  title="提示"
+  :visible.sync="dialogVisible"
+  width="30%"
+  :before-close="handleClose">
+  <span>确定使用该评分表文件？（该文件会覆盖旧评分表文件）</span>
+  <span slot="footer" class="dialog-footer">
+    <el-button @click="dialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="upload">确 定</el-button>
+  </span>
+</el-dialog>
   </div>
+
 </template>
 
 <script>
+import BreadCrumbNavi from '@/components/globalChildComp/breadCrumbNavi'
 export default {
   data(){
     return{
       fileList:[],
+      tip:'',
+      fileUrl:'',
+      dialogVisible:false
     }
   },
+  created(){
+    this.getUrl()
+  },
+  components:{
+    BreadCrumbNavi
+  },
   methods:{
+    async getUrl(){
+      const {data:res} = await this.$http.get('/grade/getEvalTableUrl')
+      if(res.err==-1) 
+        this.tip= res.meta.$msg
+      this.fileUrl = this.$http.defaults.baseURL+res.url
+      console.log(this.fileUrl)
+      console.log(this.tip)
+
+    },
      async upload() {
        const formData = new FormData();
        let file = this.$refs.uploadFile.uploadFiles[0]

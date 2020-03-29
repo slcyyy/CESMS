@@ -13,10 +13,15 @@ import manage from '@/components/archives/manage'
 import education from '@/components/archives/education'
 import majorHazard from '@/components/riskManage/majorHazard'
 import HIRARC from '@/components/riskManage/hazardAssess'
+import safetyPlan from '@/components/riskManage/safetyPlan'
 import vertifyEmail from '@/components/personal/vertifyEmail'
 import account from '@/components/personal/account'
 import dataset from '@/components/grade/dataset'
 import checklist from '@/components/grade/checklist'
+import getScore from '@/components/grade/getScore'
+import EvaluateContent from '@/components/grade/EvaluateContent'
+import fillStatus from '@/components/grade/fillStatus'
+
 
 Vue.use(VueRouter)
 //vscode提供的目录功能 @->src
@@ -87,13 +92,28 @@ const routes = [
         component:vertifyEmail
       },
       {
-        path:'/dataset',
+        path:'/importEvaluateTable',
         component:dataset
       },
       {
         path:'/fillTable',
         component:fillTable,
       },
+      {
+        path:'/getScore',
+        component:getScore
+      },
+      {
+        path:'/getEvaluateContent',
+        component:EvaluateContent
+      },
+      {
+        path:'/getFillStatus',
+        component:fillStatus
+      },
+      {path:'/safetyPlan',
+       component:safetyPlan
+      }
     ]
   }
 ]

@@ -5,12 +5,17 @@ html,body,#app{
 }
 
 .el-breadcrumb{
+  /* background-color: #DDDDDD; */
   margin-bottom:15px;
   font-size:12px;
 }
 
-.el-card{
+/* .box-card{
   box-shadow: 0 1px 1px rgba(0,0,0,0.15) !important;
+} */
+
+.box-card{
+  margin-bottom: 10px;
 }
 
 .el-row{
@@ -32,3 +37,21 @@ html,body,#app{
 .el-table .warning-row {
   background: oldlace;
 }
+
+table{
+  border-collapse:collapse;
+  width:100%;
+  margin:auto 0;
+}
+th,td{
+  text-align: center;
+}
+
+.clearfix:before,.clearfix:after {
+  display: table;
+  content: "";
+}
+.clearfix:after {
+  clear: both
+}
+
