@@ -32,7 +32,10 @@ const routes = [
   },
   {
     path: '/login',
-    component:Login
+    component:Login,
+    meta:{
+      title:"化工企业安全管理系统-CESMS"
+    }
   },
   {
     path:'/checklist',
@@ -46,6 +49,9 @@ const routes = [
       {
         path:'/welcome',
         component:Welcome,
+        meta:{
+          title:"欢迎-CESMS"
+        }
       },
       {
         path:'/usersList',

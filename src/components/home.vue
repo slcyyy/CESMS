@@ -7,33 +7,45 @@
       <el-button type="info" @click="logout">退出</el-button>
     </el-header>
     <el-container>
-      <el-aside width="200px">
+      <el-aside
+        width="auto"
+        @mouseenter.native="collapseOpen"
+        @mouseleave.native="collapseClose"
+      >
         <el-menu
-          class="el-menu-vertical-demo"
+          class="el-menu-vertical"
           background-color="#545c64"
           text-color="#fff"
           active-text-color="#ffd04b"
           :unique-opened="false"
           :collapse-transition="false"
           router
-          :default-active="activePath"
+          :collapse="isCollapse"
         >
-        <!-- unique必须要加冒号，因为是不加冒号是个字符串 -->
-        <!-- 是否使用 vue-router 的模式，启用该模式会在激活导航时以 index 作为 path 进行路由跳转 -->
-        <!-- index只接受字符串 加''是为了变为字符串 -->
-        <el-submenu :index="item.id+''" v-for="item in menulist" :key="item.id">
-          <template slot="title">
-                <i :class="iconsObj[item.id]"></i>
-                <span>{{item.name}}</span>
-              </template>
-              <!-- 二级菜单 -->
-               <el-menu-item :index="'/'+subItem.path" v-for="subItem in item.children" 
-               :key="subItem.id" @click = "saveNavState('/'+subItem.path)">
-               <i class="el-icon-menu"></i>
-               <span>{{subItem.name}}</span>
-               </el-menu-item>
-        </el-submenu>
-        
+          <!-- unique必须要加冒号，因为是不加冒号是个字符串 -->
+          <!-- 是否使用 vue-router 的模式，启用该模式会在激活导航时以 index 作为 path 进行路由跳转 -->
+          <!-- index只接受字符串 加''是为了变为字符串 -->
+          <el-submenu
+            :index="item.id + ''"
+            v-for="item in menulist"
+            :key="item.id"
+            class="el-menu-vertical"
+          >
+            <template slot="title">
+              <i :class="iconsObj[item.id]"></i>
+              <span>{{ item.name }}</span>
+            </template>
+            <!-- 二级菜单 -->
+            <!-- @click = "saveNavState('/'+subItem.path)"  -->
+            <el-menu-item
+              :index="'/' + subItem.path"
+              v-for="subItem in item.children"
+              :key="subItem.id"
+            >
+              <i class="el-icon-menu"></i>
+              <span>{{ subItem.name }}</span>
+            </el-menu-item>
+          </el-submenu>
         </el-menu>
       </el-aside>
       <el-main>
@@ -44,6 +56,8 @@
 </template>
 
 <script>
+import managerMenu from '@/utils/managerMenu.js'
+import riskMenu from '@/utils/riskMenu.js'
 export default {
   data(){
     return{
@@ -55,30 +69,38 @@ export default {
         '4':'el-icon-s-claim',
         '5':'el-icon-s-tools'
       },
-      // isCollapse:false
-      //*** 用路由可能好一点，用计算属性*/ */
-      activePath:''
+      userId:'',
+      isCollapse: true,
+      collapseBtnClick: false,
     }
   },
   //生命周期函数
   created(){
     this.getMenuList()
-    this.activePath = window.sessionStorage.getItem('activePath')
   },
   methods: {
     logout() {
       window.sessionStorage.clear()
       this.$router.push('/login')
     },
-    //获取左侧菜单数据
-    async getMenuList(){
-      const {data:res} = await this.$http.get('/index/menus')
-      if(res.meta.err !== 0) return this.$message.error("获取左侧列表失败")
-      this.menulist = res.menu
+    getIcon(){
+      if(this.isCollapse) return 'el-icon-d-arrow-left'
+      return 'el-icon-d-arrow-right'
     },
-    saveNavState(activePath){
-      window.sessionStorage.setItem('activePath',activePath)
-    }
+    collapseOpen() {
+      if (this.collapseBtnClick) return;
+      this.isCollapse = false;
+    },
+    collapseClose() {
+      if (this.collapseBtnClick) return;
+      this.isCollapse = true;
+    },
+    //获取左侧菜单数据
+     getMenuList(){
+        let roleId = window.sessionStorage.roleId
+        if(roleId.indexOf('1')!=-1) return this.menulist = managerMenu
+        else if(roleId.indexOf('5')!=-1)  return this.menulist = riskMenu
+    },
   }
 }
 </script>
@@ -88,7 +110,8 @@ export default {
   height: 100%;
 }
 .el-header {
-  background-color:	#A2B5CD;
+/* #a2b5cd; */
+  background-color: #a2b5cd;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -96,16 +119,21 @@ export default {
 .header-title {
   font-size: 25px;
 }
+.el-menu-vertical:not(.el-menu--collapse) {
+  width: 200px;
+  /* min-height: 400px; */
+}
+
 .el-aside {
   background-color: #545c64;
 }
 .el-main {
-  background-color:#F5F5FE
+  background-color: #f5f5fe;
 }
-.el-menu{
-  border-right:none;
+.el-menu {
+  border-right: none;
 }
-.iconfont{
-  margin-right:10px;
+.iconfont {
+  margin-right: 10px;
 }
 </style>

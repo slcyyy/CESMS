@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-card>
+    <!-- <el-card> -->
       <table cellspacing="0" border="1" style="margin-top:20px;font-size:16px;" >
       <thead>
         <tr>
@@ -15,7 +15,7 @@
       </thead>
       <tbody></tbody>
     </table>
-    </el-card> 
+    <!-- </el-card>  -->
   </div>
 </template>
 

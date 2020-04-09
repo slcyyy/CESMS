@@ -2,12 +2,14 @@ html,body,#app{
   height:100%;
   padding:0;
   margin:0;
+  /* font-size: 16px; */
 }
 
 .el-breadcrumb{
-  /* background-color: #DDDDDD; */
+  background-color: #ffffff;
   margin-bottom:15px;
   font-size:12px;
+  padding: 10px 10px;
 }
 
 /* .box-card{
@@ -42,9 +44,21 @@ table{
   border-collapse:collapse;
   width:100%;
   margin:auto 0;
+  overflow: scroll;
+}
+caption{
+  font-size:16px;
+  font-weight:bold;
+}
+th{
+  font-size: 15px;
+}
+td{
+  font-size:14px;
 }
 th,td{
   text-align: center;
+  padding:1em 0;
 }
 
 .clearfix:before,.clearfix:after {
@@ -54,4 +68,7 @@ th,td{
 .clearfix:after {
   clear: both
 }
-
+/* 为了去标题框 */
+:focus{
+  outline:0;
+}

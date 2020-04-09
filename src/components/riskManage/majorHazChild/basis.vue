@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-card style="font-size:16px;">
+    <!-- <el-card style="font-size:16px;"> -->
 			<p>依据标准文件： <el-link href= "http://www.bzmfxz.com/Common/ShowDownloadUrl.aspx?urlid=0&id=214071" target="_blank">《危险化学品重大危险源辨识》(GB18218-2018)</el-link></p>
       <el-collapse v-model="activeName">
         <el-collapse-item title="辨识依据" name="1" style="backgroud-color:#dddddd"> 
@@ -21,7 +21,7 @@
           <div>帮助用户识别：界面简单直白，让用户快速识别而非回忆，减少用户记忆负担。</div>
         </el-collapse-item>
       </el-collapse>
-    </el-card>
+    <!-- </el-card> -->
   </div>
 </template>
 

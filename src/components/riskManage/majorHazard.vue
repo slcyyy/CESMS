@@ -4,6 +4,7 @@
       <template #secondPath>风险管理</template>
       <template #thirdPath>重大危险源识别和分级</template>
     </BreadCrumbNavi>
+    <el-card>
     <el-tabs v-model="activeName">
     <el-tab-pane label="重大危险源辨识结果" name="first">
       <Identify></Identify>
@@ -15,6 +16,7 @@
       <Basis></Basis>
     </el-tab-pane>
   </el-tabs>
+    </el-card>
   </div>
 </template>
 

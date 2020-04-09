@@ -18,6 +18,14 @@ Vue.use(MyServerHttp)
 // Vue.prototype.$message = Message
 Vue.config.productionTip = false
 
+//全局钩子函数 next执行完成后导航的状态是confirmed,否则为false
+router.beforeEach((to,from,next)=>{
+  if(to.meta.title){
+    document.title = to.meta.title
+  }
+  next()
+})
+
 new Vue({
   router,
   store,
