@@ -4,7 +4,7 @@
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>管理员设置</el-breadcrumb-item>
-      <el-breadcrumb-item>用户列表</el-breadcrumb-item>
+      <el-breadcrumb-item>用户管理</el-breadcrumb-item>
     </el-breadcrumb>
     <!--卡片视图-->
     <el-card class="box-card">
@@ -38,6 +38,14 @@
         <el-table-column prop="user_roleName" label="角色" width="180"></el-table-column>
         <el-table-column prop="oprate" label="操作">
           <template v-slot="scope">
+            <el-tooltip content="查看用户信息" placement="top">
+              <el-button
+                type="success"
+                icon="el-icon-view"
+                size="mini"
+                @click="showEditForm(scope.row.user_id)"
+              ></el-button>
+            </el-tooltip>
             <el-tooltip content="编辑用户" placement="top">
               <el-button
                 type="primary"
@@ -240,7 +248,6 @@ export default {
         }
       }
       this.editFormVisible = true
-      //}
     },
     async editUser() {
       this.$refs.editFormRef.validate(async valid => {

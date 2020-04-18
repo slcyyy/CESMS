@@ -25,7 +25,7 @@ const riskMenu= [
 		children:[
 			{id:31,name:'重大危险源判断',path:'majorHazard'},
 			{id:32,name:'风险评估',path:'hazardAssess'},
-			{id:33,name:'自定义安全计划表',path:'hazardAssess'}
+			{id:33,name:'自定义安全计划表',path:'safetyPlan'}
 		]
 	}
 ]

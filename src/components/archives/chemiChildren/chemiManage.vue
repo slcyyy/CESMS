@@ -1,14 +1,29 @@
 <template>
   <div>
-    <el-button type="primary" @click="addProperVisible= true">添加条目</el-button>
-    <el-table :data="chemiData" stripe style="width: 100%">
-      <el-table-column type="index" label="编号" width="40"></el-table-column>
+        
+    <el-row :gutter="25">
+        <el-col :span="7">
+          <el-input
+            placeholder="请输入化学品全称或关键字"
+            class="input-with-select"
+            clearable
+  >
+            <el-button slot="append" icon="el-icon-search" ></el-button>
+          </el-input>
+        </el-col>
+        <el-col :span="6">
+          <el-button type="primary" @click="addFormVisible = true">添加化学品信息</el-button>
+        </el-col>
+      </el-row>
+      <div class="scrolldiv">
+    <el-table :data="chemiData" border style="width: 100%">
+       <el-table-column prop="chemi_location" label="存储地点" width="180"></el-table-column>
       <el-table-column prop="chemi_name" label="化学品名" width="180"></el-table-column>
       <el-table-column prop="chemi_property" label="特性" ></el-table-column>
-      <el-table-column prop="chemi_location" label="存储地点" width="100"></el-table-column>
-      <el-table-column prop="chemi_allowance" label="余量" width="100"></el-table-column>
+     <el-table-column prop="chemi_device" label="设备" width="100"></el-table-column>
+     <el-table-column prop="chemi_allowance" label="余量" width="100"></el-table-column>
+      <el-table-column prop="chemi_total" label="总量" width="100"></el-table-column>
       <el-table-column prop="chemi_refreshTime" label="更新时间" width="100"></el-table-column>
-      <el-table-column prop="chemi_refreshRecord" label="更新记录" width="100"></el-table-column>
       <el-table-column label="操作" width="100">
         <template slot-scope="scope">
           <!-- //@click.native.prevent是为了使用父组件的事件 -->
@@ -17,6 +32,7 @@
         </template>
       </el-table-column>
     </el-table>
+    </div>
     <!-- 添加对话框 -->
     <el-dialog
       title="添加条目"
@@ -39,8 +55,7 @@
         <el-form-item label="余量" :label-width="formLabelWidth" prop="chemi_allowance">
           <el-input v-model="addForm.chemi_allowance" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="更新时间" :label-width="formLabelWidth" prop="chemi_refreshTime">
-          <el-input  v-model="addForm.chemi_refreshTime"></el-input>
+        <el-form-item label="更新时间"  width="100" prop="chemi_refreshTime">
         </el-form-item>
         <el-form-item label="更新记录" :label-width="formLabelWidth" prop="chemi_refreshRecord">
           <el-input  v-model="addForm.chemi_refreshRecord"></el-input>
@@ -60,15 +75,15 @@
     >
       <el-form ref="editFormRef" :model="editForm" :rules="addRule" >
         <!--prop名称要跟绑定的数据名字相同-->
+         <el-form-item  label="存储地点" :label-width="formLabelWidth" prop="chemi_location">
+          <el-input v-model="editForm.chemi_location" autocomplete="off"></el-input>
+        </el-form-item>
         <el-form-item label="化学品名" :label-width="formLabelWidth" >
           <el-input v-model="editForm.chemi_name" disabled></el-input>
         </el-form-item>
         <!-- 这里主要要把它转为number -->
         <el-form-item label="特性" :label-width="formLabelWidth" prop="chemi_property">
           <el-input v-model="editForm.chemi_property" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item  label="存储地点" :label-width="formLabelWidth" prop="chemi_location">
-          <el-input v-model="editForm.chemi_location" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="余量" :label-width="formLabelWidth" prop="chemi_allowance">
           <el-input v-model="editForm.chemi_allowance" autocomplete="off"></el-input>
@@ -89,18 +104,43 @@
 </template>
 
 <script>
+import BreadCrumbNavi from '@/components/globalChildComp/breadCrumbNavi'
 export default {
   data(){
     return{
-      chemiData:[],
+      chemiData:[{
+        chemi_name:'氯乙烯',
+        chemi_property:'氯乙烯又名乙烯基氯（Vinyl chloride）是一种应用于高分子化工的重要的单体，可由乙烯或乙炔制得。为无色、易液化气体，沸点-13℃，临界温度151.5℃，临界压力5.57MPa。相对密度2.2%。氯乙烯是有毒物质，长期吸入和接触氯乙烯可能引发肝癌。它与空气形成爆炸混合物，爆炸极限3.6%～33%（体积），在加压下更易爆炸，贮运时必须注意容器的密闭及氮封，并应添加少量阻聚剂。 ',
+        chemi_location:'氯乙烯罐区',
+        chemi_device:'球罐',
+    chemi_total:'32',
+        chemi_allowance:'32',
+        chemi_refreshTime:'2020/1/23 08:32',
+      }  ,
+       {
+        chemi_name:'电石',
+        chemi_property:'碳化钙，电石的主要成分，是无机化合物，白色晶体，工业品为灰黑色块状物，断面为紫色或灰色。遇水立即发生激烈反应，生成乙炔，并放出热量。碳化钙是重要的基本化工原料，主要用于产生乙炔气。也用于有机合成、氧炔焊接等。',
+        chemi_location:'电石原料车间',
+        chemi_allowance:'63',
+        chemi_device:'料仓',
+        chemi_total:63,
+        chemi_refreshTime:'2020/2/4 23:22',
+      },
+      {
+        chemi_name:'氨',
+        chemi_property:'',
+        chemi_location:'合成车间',
+        chemi_allowance:'',
+        chemi_refreshTime:'2020/2/4',
+      }
+      ],
       addProperVisible:false,
       addForm:{
-        chemi_name:'',
+        chemi_name:'氨',
         chemi_property:'',
-        chemi_location:'',
+        chemi_location:'合成车间',
         chemi_allowance:'',
-        chemi_refreshTime:'',
-        chemi_refreshRecord:''
+        chemi_refreshTime:'2020/2/4',
       },
       formLabelWidth: '110px',
       addRule:{
@@ -122,8 +162,12 @@ export default {
       }
     }
   },
+    components:{
+      BreadCrumbNavi,
+  
+    },
   created(){
-    this.getData()
+    // this.getData()
   },
   methods:{
     handleClose(done) {
@@ -135,10 +179,10 @@ export default {
         .catch(_ => {})
     },
     async getData(){
-      const { data: res } = await this.$http.get('archives/getChemiInfo',{params:{choice:2}})
+      const { data: res } = await this.$http.get('/archives/getChemicalInfo')
       if (res.meta.err == -1)
         return this.$message.error('获取化学品管理列表失败')
-      this.chemiData = res.chemiResult
+      this.chemiData = res.chemicalInfo
     },
     async deleteRow(chemi_name){
        const res = await this.$confirm('此操作将永久删除该法规条目，是否继续?', '提示', {
@@ -165,7 +209,7 @@ export default {
         this.$message.success('修改化学品特性成功')
         this.eidtProperVisible = false
         this.$refs.editFormRef.resetFields();
-        console.log(this.editForm.chemi_property)
+        // console.log(this.editForm.chemi_property)
         this.getData() 
       })
     },

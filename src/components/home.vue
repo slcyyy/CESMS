@@ -11,6 +11,7 @@
         width="auto"
         @mouseenter.native="collapseOpen"
         @mouseleave.native="collapseClose"
+        style="display:fixed;overflow-x:hidden"
       >
         <el-menu
           class="el-menu-vertical"
@@ -119,9 +120,11 @@ export default {
 .header-title {
   font-size: 25px;
 }
+.el-menu--collapse{
+ width:25px
+}
 .el-menu-vertical:not(.el-menu--collapse) {
   width: 200px;
-  /* min-height: 400px; */
 }
 
 .el-aside {

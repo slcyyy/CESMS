@@ -1,6 +1,5 @@
 <template>
   <div>
-    <el-card>
       <p style="font-weight:bold;">工作危害分析法（JHA）等级判定：风险度R=可能性L×后果严重性S</p>
       <el-collapse v-model="activeName">
         <el-collapse-item title="可能性等级判断" name="1" >
@@ -46,7 +45,6 @@
           </el-table>
         </el-collapse-item>
       </el-collapse>
-    </el-card>
   </div>
 </template>
 

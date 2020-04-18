@@ -13,8 +13,10 @@ import manage from '@/components/archives/manage'
 import education from '@/components/archives/education'
 import majorHazard from '@/components/riskManage/majorHazard'
 import HIRARC from '@/components/riskManage/hazardAssess'
+import editPlan from '@/components/riskManage/planChildren/editPlan'
 import safetyPlan from '@/components/riskManage/safetyPlan'
-import vertifyEmail from '@/components/personal/vertifyEmail'
+ 
+import info from '@/components/personal/info'
 import account from '@/components/personal/account'
 import dataset from '@/components/grade/dataset'
 import checklist from '@/components/grade/checklist'
@@ -94,8 +96,8 @@ const routes = [
         component:account
       },
       {
-        path:'/vertifyEmail',
-        component:vertifyEmail
+        path:'/info',
+        component:info 
       },
       {
         path:'/importEvaluateTable',
@@ -118,7 +120,11 @@ const routes = [
         component:fillStatus
       },
       {path:'/safetyPlan',
-       component:safetyPlan
+       component:safetyPlan,
+      },
+      {
+        path:'/safetyPlan/editPlan',
+        component:editPlan
       }
     ]
   }
@@ -130,11 +136,9 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes
 })
+
 //挂载路由导航守卫
 router.beforeEach((to,from,next)=>{
-  //to代表将要访问的路径
-  //from代表从哪个路径跳转而来
-  //next是一个函数，表示放行
   if(to.path === '/login') return next(); 
   //获取token
   const tokenStr = window.sessionStorage.getItem('token');

@@ -121,7 +121,7 @@
       </el-table>
     </el-form>
     <el-row class="rightRow">
-      <el-button type="danger" style="margin-right:30px;">危险按</el-button>
+      <el-button type="danger" round style="margin-right:30px;">暂存</el-button>
       <el-button type="primary" round @click="saveTable" style="margin-top:10px">提交</el-button>
     </el-row>
   </div>
@@ -185,7 +185,6 @@ export default {
       alert('浏览器不支持localstorage,请不要使用无痕浏览')
     } else {
       //自动保存数据
-      console.log('已经挂在好饿了')
       var t1 = setTimeout(this.temporySaveTable(), 120000)
     }
   },
@@ -201,24 +200,26 @@ export default {
     async getChecklistData() {
       //获取公司ID\表ID
       this.companyId = this.$route.query.company.split(',')[0]
-      console.log(this.companyId)
       this.tableId = this.$route.query.table.split(',')[0]
-      //2.从数据库中获取数据
+      //从数据库中获取数据
       const { data: res } = await this.$http.get('grade/getChecklistData', {
         params: { checklist_pId: this.tableId, fill_userId: this.fill_userId,fill_companyId:this.companyId }
       })
       if (res.meta.err == -1) return this.$message.error('获取评分列表失败')
-      //如果有填写记录则把所有输入框设为禁用
-      if (res.record) {
+      //如果已经填写则把所有输入框设为禁用
+       if (res.record) {
          this.disabled = true
          this.isRecord = true
       } 
+      //  if(res.state>0)
+      //   this.disabled = true  
       this.checklistData = res.cTable
       this.arrData.checklistData = this.checklistData
-      console.log(this.checklistData)
+     
     },
     temporySaveTable() {
       try {
+           
         if (this.stop > 0) {
           clearTimeout(t2)
         } else {
@@ -259,7 +260,7 @@ export default {
           fillRecord.children.push(input)
         }
         this.submitData.push(fillRecord)
-        console.log(this.submitData)
+       
       }
     },
     //提交填写的评分表数据
@@ -267,13 +268,12 @@ export default {
       this.$refs.checklistForm.validate(async valid => {
         if (!valid) 
            return this.$message.error('还有内容未填写！')
-        console.log(valid)
         if(this.checklistData[0].children[0].length<=7){
            return this.$message.error('还有内容未填写！')
         }
         const fill_companyId = this.companyId
         const fill_fTableId = this.tableId
-        //get time
+
         let d = new Date() //封装为当前代码执行时间2020-02-23T07:42:22.980Z
         let year = d.getFullYear()  //今年的年份 
         let month = d.getMonth()+1 //今天是几月,0表示1月 取值是0-11
@@ -283,8 +283,10 @@ export default {
         let seconds = d.getSeconds()  //现在几秒
         const fillTime = year+'/'+month+'/'+day+' '+hour+':'+minute
         //提交
+         console.log(this.checklistData)
+         console.log('-------')
         this.handleData()
-        console.log(this.tableName)
+         console.log(this.submitData)
         let { data: res } = await this.$http.post('/grade/saveChecklist', {
           submitTable: this.submitData,
           fill_userId:this.fill_userId,
@@ -297,8 +299,6 @@ export default {
         if (res.meta.err == -1) return this.$message.error('保存数据失败')
         this.disabled = true
         this.$message.success('保存数据成功')
-        // if(t1)
-        //  clearTimeout(t1)
       })
     }
   }

@@ -4,7 +4,7 @@
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>用户管理</el-breadcrumb-item>
-      <el-breadcrumb-item>权限设置</el-breadcrumb-item>
+      <el-breadcrumb-item>权限管理</el-breadcrumb-item>
     </el-breadcrumb>
 
     <!--卡片视图-->
@@ -52,7 +52,7 @@
     </el-card>
 
      <!--添加角色对话框-->
-    <el-dialog title="添加用户" :visible.sync="addFormVisible" width="40%" > 
+    <el-dialog title="添加用户" :visible.sync="addFormVisible" width="40%"  > 
       <el-form ref="addFormRef" :model="addForm" :rules="addFormRules" :label-width="formLabelWidth">
         <!--prop名称要跟绑定的数据名字相同-->
         <el-form-item label="角色名称" prop="role_name">
@@ -219,12 +219,9 @@ export default {
       const {data:res} = await this.$http.get('/roles/getPowersTree')
       if(res.meta.err == -1) return this.$message.error('获取权限列表失败')
       this.powers = res.powerList
-      let role_id = role.role_id //获取当前的角色ID
-      let role_powers = role.role_powers //获取当前已经拥有的权限
-      const {data:res2} = await this.$http.get('/roles/getPowersLeafTreeById',{params:{role_id,role_powers}})
-      this.checkedKeys = res2.leafList
+      this.role_id =role.role_id//获取当前的角色ID
+      this.checkedKeys = role.role_powers.split(',') //获取当前已经拥有的权限
       this.AssignPowerFormVisible = true
-      this.role_id =role_id
     },
   
     //提交修改

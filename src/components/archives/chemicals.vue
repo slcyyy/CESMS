@@ -4,22 +4,16 @@
        <template #secondPath>危险化学品管理</template>
        <template #thirdPath>化学品特性</template>
     </BreadCrumbNavi>
-
-    <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
-      <el-tab-pane label="化学品特性" name="first"> 
-          <el-card class="box-card">
+    <el-card>
+    <el-tabs v-model="activeName" @tab-click="handleClick" style="margin-top:-10px">
+      <el-tab-pane label="化学品特性" name="first" > 
             <Property></Property>
-          </el-card>
       </el-tab-pane>
       <el-tab-pane label="化学品管理" name="second">
-         <el-card class="box-card">
             <Manage></Manage>
-          </el-card>
       </el-tab-pane>
-      <el-tab-pane label="接触记录" name="third">接触记录</el-tab-pane>
-      <el-tab-pane label="运输记录" name="fourth">运输记录</el-tab-pane>
-      <el-tab-pane label="出入库记录" name="five">出入库记录</el-tab-pane>
     </el-tabs>
+     </el-card>
   </div>
 </template>
 

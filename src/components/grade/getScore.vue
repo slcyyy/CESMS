@@ -1,28 +1,29 @@
 <template>
   <div>
     <!--面包屑导航-->
-    <el-breadcrumb separator-class="el-icon-arrow-right">
-      <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>企业评分</el-breadcrumb-item>
-      <el-breadcrumb-item>查看打分情况</el-breadcrumb-item>
-    </el-breadcrumb>
+      <BreadCrumbNavi>
+      <template #secondPath>企业评分</template>
+      <template #thirdPath>查看评分结果</template>
+    </BreadCrumbNavi>
 
     <!--卡片视图-->
-    <el-card class="box-card">
+    <el-card class="box-card " >
 		<!-- 选择企业查看评分结果 -->
+    <el-row>
       <el-select v-model="value" placeholder="请选择公司">
-        <el-option
-          v-for="item in companyList"
-          :key="item.company_id"
-          :label="item.company_name"
-          :value="item.company_id"
-					@change="getScore"
-        ></el-option>
+          <el-option
+      v-for="item in options"
+      :key="item.value"
+      :label="item.label"
+      :value="item.value">
+    </el-option>
       </el-select>
-
+       <el-button style= "margin-left:90%" type="primary">导出</el-button>
+    </el-row>
 	  <!-- 评分结果表 -->
-      <table border="1" id="scoreTable">
-        <caption style="font-weight:bold;margin:10px 0;font-size:1.5em;">XXXCOMPANY评分结果</caption>
+    <div  class="scrolldiv" style="margin-top:20px;height:400px;">
+      <table border="1" id="scoreTable" >
+        <caption style="font-weight:bold;margin:10px 0;font-size:1.5em;">国服公司评分结果</caption>
         <thead>
           <tr>
             <th>检查项</th>
@@ -65,11 +66,13 @@
           </tr>
         </tfoot>
       </table>
+      </div>
     </el-card>
   </div>
 </template>
 
 <script>
+import BreadCrumbNavi from '@/components/globalChildComp/breadCrumbNavi'
 export default {
   data() {
     return {
@@ -80,13 +83,31 @@ export default {
           children: [
             {
               itemId: '1.1',
-              itemRealScore: 32,
-              itemFullScore: 50,
-              itemScoreAverage: '23.3%'
+              itemRealScore: 48,
+              itemFullScore: 65,
+              itemScoreAverage: '73.83%'
             },
             {
               itemId: '1.2',
               itemRealScore: 32,
+              itemFullScore: 50,
+              itemScoreAverage: '64.00%'
+            },
+             {
+              itemId: '1.3',
+              itemRealScore: 51,
+              itemFullScore: 65,
+              itemScoreAverage: '78.4%'
+            },
+             {
+              itemId: '1.4',
+              itemRealScore: 32,
+              itemFullScore: 50,
+              itemScoreAverage: '64.00%'
+            },
+             {
+              itemId: '1.5',
+              itemRealScore: 34,
               itemFullScore: 50,
               itemScoreAverage: '23.3%'
             }
@@ -123,12 +144,31 @@ export default {
         totalScoreAverage: '32.44%'
 			},
 			companyList:[],
-			value:''
+			 options: [{
+          value: '选项1',
+          label: '国服'
+        }, {
+          value: '选项2',
+          label: '双皮奶'
+        }, {
+          value: '选项3',
+          label: '蚵仔煎'
+        }, {
+          value: '选项4',
+          label: '龙须面'
+        }, {
+          value: '选项5',
+          label: '北京烤鸭'
+        }],
+        value: ''
     }
 	},
 	created(){
      this.getCompanyList()
-	},
+  },
+  components:{
+    BreadCrumbNavi
+  },
   methods:{
 	  async getCompanyList(){
 		  const {data:res}=await this.$http.get('/grade/getCompanyList')

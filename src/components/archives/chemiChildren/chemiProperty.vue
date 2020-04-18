@@ -1,7 +1,21 @@
 <template>
   <div>
-    <el-button type="primary" @click="addProperVisible= true">添加化学品</el-button>
-    <el-table :data="properties" stripe style="width: 100%" align="center">
+   <el-row :gutter="25">
+        <el-col :span="7">
+          <el-input
+            placeholder="请输入化学品全称或关键字"
+            class="input-with-select"
+            clearable
+          >
+            <el-button slot="append" icon="el-icon-search" ></el-button>
+          </el-input>
+        </el-col>
+        <el-col :span="6">
+          <el-button type="primary" @click="addFormVisible = true">添加化学品信息</el-button>
+        </el-col>
+      </el-row>
+<div style="height:380px;overflow-y:auto">
+    <el-table :data="properties" border   align="center">
       <el-table-column type="index" label="#" width="40"></el-table-column>
       <el-table-column prop="chemi_name" label="化学品名"></el-table-column>
       <el-table-column prop="chemi_hazardLevel" label="危害级别" width="80"></el-table-column>
@@ -16,6 +30,7 @@
         </template>
       </el-table-column>
     </el-table>
+    </div>
     <!-- 添加化学品对话框 -->
     <el-dialog
       title="添加化学品"
@@ -92,7 +107,24 @@
 export default {
   data() {
     return {
-      properties: [],
+      properties: [
+        {
+          chemi_name:'乙炔',
+          chemi_hazardLevel:2,
+          chemi_defendReq:'眼睛防护：一般不需要特殊防护，高浓度接触时可戴化学安全防护眼镜。呼吸系统防护：一般不需要特殊防护，但建议特殊情况下佩带合适的自吸过滤式防毒面具（氧气含量与空气中氧含量一致或接近时）。',
+          chemi_storageReq:'乙炔的包装法通常是溶解在溶剂及多孔物中，装入钢瓶内。储存于阴凉、通风的库房。远离火种、热源。库温不宜超过30℃。应与氧化剂、酸类、卤素分开存放，切忌混储。采用防爆型照明、通风设施。禁止使用易产生火花的机械设备和工具。储区应备有泄漏应急处理设备。',
+          chemi_transReq:'不得同一车运送氧气、乙炔瓶，如作业中需乙炔瓶和氧气瓶放在同一小车上搬运，必须用非燃材料隔板隔开；',
+          chemi_abandonReq:'处置前应参阅国家和地方有关法规。建议用焚烧法处置和填埋。'
+        },
+        {
+          chemi_name:'氯乙烯',
+          chemi_hazardLevel:2,
+          chemi_defendReq:'呼吸系统防护：空气中浓度超标时，佩戴过滤式防毒面具（半面罩）。紧急事态抢救或撤离时，建议佩戴空气呼吸器。',
+          chemi_storageReq:'钢质气瓶；磨砂口玻璃瓶或螺纹口玻璃瓶外普通木箱；安瓿瓶外普通木箱；螺纹口玻璃瓶、铁盖压口玻璃瓶、塑料瓶或金属桶（罐）外普通木箱。',
+          chemi_transReq:'不得同一车运送氧气、乙炔瓶，如作业中需乙炔瓶和氧气瓶放在同一小车上搬运，必须用非燃材料隔板隔开；',
+          chemi_abandonReq:'用焚烧法处置。与燃料混合后，再焚烧。焚烧炉排出的卤化氢通过酸洗涤器除去。。'
+        }
+      ],
       addProperVisible: false,
       addForm: {
         chemi_name: '',
@@ -123,7 +155,7 @@ export default {
     }
   },
   created() {
-    this.getProperties()
+    // this.getProperties()
   },
   methods: {
     handleClose(done) {
@@ -135,11 +167,10 @@ export default {
         .catch(_ => {})
     },
     async getProperties() {
-      const { data: res } = await this.$http.get('archives/getChemiInfo',{params:{choice:1}})
+      const { data: res } = await this.$http.get('/archives//getChemicalInfo')
       if (res.meta.err == -1)
         return this.$message.error('获取化学品特性列表失败')
-      this.properties = res.chemiResult
-      console.log(this.properties)
+      this.properties = res.chemicalInfo
     },
     addProperty() {
       this.$refs.addFormRef.validate(async (valid) => {

@@ -1,0 +1,366 @@
+<!-- 添加对话框 -->
+    <el-dialog title="添加化学品存储信息" :visible.sync="addProperVisible" width="80%">
+      <el-form ref="addFormRef" :model="addForm" label-width="100px" style="text-align:left;">
+        <el-divider content-position="right">化学品存储区域</el-divider>
+        <el-tag type="warning">
+          <i class="el-icon-warning"></i> 可以选择下拉框中提供的选项，也可以自定义输入创建标签
+        </el-tag>
+        <el-form-item label="存储单元" prop="chemi_unit" style="font-size:16px">
+          <el-select v-model="addForm.chemi_unitId" filterable placeholder="请选择存储区域标签">
+            <el-option
+              v-for="item in unitOptions"
+              :key="item.unit_id"
+              :label="item.unit_name"
+              :value="item.unit_id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-divider content-position="right" style="font-size:13px;">该单元存储的化学品信息</el-divider>
+        <el-form-item
+          v-for="(chemical,index) in addForm.chemicalInfo"
+          :key="index"
+          :label="'化学品信息'+(index+1)"
+        >
+          <el-row>
+            <el-input v-model="chemical.chemi_name" placeholder="化学品名称" style="width:25%"></el-input>
+            <span style="margin:0 1%">-</span>
+            <el-input v-model="chemical.chemi_device" placeholder="设备(选填)" style="width:25%"></el-input>
+            <span style="margin:0 1%">-</span>
+            <el-input
+              v-model="chemical.chemi_allowance"
+              placeholder="该化学品存储量(吨)"
+              style="width:18%"
+            ></el-input>
+            <span style="margin:0 1%">-</span>
+            <el-input v-model="chemical.chemi_criticalMass" placeholder="临界量(吨)" style="width:18%"></el-input>
+            <span class="icon" style="color:red">
+              <i class="el-icon-remove-outline" @click="removeDomain(chemical,addForm)"></i>
+            </span>
+          </el-row>
+        </el-form-item>
+        <el-form-item style="text-align:center">
+          <p class="icon" @click="addDomain('add')">
+            <i class="el-icon-circle-plus-outline">添加化学品存储信息</i>
+          </p>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="resetForm('addFormRef');addProperVisible = false">取 消</el-button>
+        <el-button type="primary" @click="addData">提 交</el-button>
+      </span>
+    </el-dialog>
+
+       async addData() {
+      let { data: res } = await this.$http.post('/hazard/addChemical', {
+        addForm: this.addForm
+      })
+      if (res.meta.err == -1) this.$message.error('提交数据失败')
+      this.$refs.addFormRef.resetFields()
+      await  this.getTableData()
+      this.addProperVisible = false
+      
+    },
+      <el-col :span="7" :offset="1">
+        <el-button type="primary" @click="addProperVisible=true">添加存储数据</el-button>
+      </el-col>
+shanchu shanchu shanchu shanchu 
+      <el-tooltip content="删除" placement="top">
+            <el-button
+              type="warning"
+              icon="el-icon-delete"
+              size="mini"
+              @click="deleteData(scope.$index,'all')"
+            ></el-button>
+          </el-tooltip>
+
+
+           async deleteData(deleteData, type, index) {
+      if (type == 'all') {
+        let t = await this.$confirm(
+          '此操作将永久删除该区域内所有存储信息, 是否继续?(如果要删除单个数据，请点击编辑操作)',
+          '提示',
+          {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }
+        ).catch(err => err)
+        if (t !== 'confirm') return
+        //删除整个单元的数据deleteData是该行的下标
+        let unitId = this.unitOptions[deleteData].unit_id
+        //传入单元ID用以删除
+        var { data: res } = await this.$http.delete('/hazard/deleteChemical', {
+          params: { deleteData:unitId, type }
+        })
+        if (res.meta.err == -1) return this.$message.error('删除失败')
+        this.getTableData()
+      }
+      //只删除其中一项内容
+      else if (type == 'one') {
+        if (this.oldEditForm.chemicalInfo[index] === undefined) {
+          this.removeDomain(null, this.editForm, index)
+        } else {
+          let t = await this.$confirm(
+            '此操作将永久删除该区域内此条存储信息, 是否继续?',
+            '提示',
+            {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }
+          ).catch(err => err)
+          if (t !== 'confirm') return
+          //只删除一个时传入的是整一行的数据
+          deleteData.chemi_unitId = this.editForm.chemi_unitId
+
+          //从数据库中删除该数据
+          var { data: res } = await this.$http.delete(
+            '/hazard/deleteChemical',
+            {
+              params: { deleteData, type }
+            }
+          )
+          if (res.meta.err == -1) return this.$message.error('删除失败')
+          this.getTableData().then(data => {
+            this.showEditForm(0,this.editForm.chemi_unitId)
+            this.$message.success('删除成功')
+          })
+        }
+      }
+    },
+
+
+    修改数据啊啊啊啊啊
+     <!-- 修改数据对话框 --> 
+    <el-dialog title="修改化学品存储信息" :visible.sync="editFormVisible" width="75%">
+      <el-form ref="editFormRef" :model="editForm" label-width="100px">
+        <el-form-item label="存储单元">
+          <el-input v-model="editForm.chemi_unit" style="width:25%" disabled></el-input>
+        </el-form-item>
+        <el-tag type="warning">
+          <i class="el-icon-warning"></i> 请先进行删除操作，再进行修改操作，否则数据会丢失，导致用户重新输入。
+        </el-tag>
+        <el-form-item
+          v-for="(chemical,index) in editForm.chemicalInfo"
+          :key="index"
+          :label="'存储信息'+(index+1)"
+        >
+        <!-- 只允许修改临界量 -->
+          <el-row :gutter="1">
+            <el-input v-model="chemical.chemi_name" placeholder="化学品名称" style="width:25%" disabled></el-input>
+            <span style="margin:0 1%">-</span>
+            <el-input v-model="chemical.chemi_device" placeholder="设备(选填)" style="width:25%" disabled></el-input>
+            <span style="margin:0 1%">-</span>
+            <el-input
+              v-model="chemical.chemi_allowance"
+              placeholder="该化学品存储量(吨)"
+              style="width:18%"
+            ></el-input>
+            <span style="margin:0 1%" disabled>-</span>
+            <el-input v-model="chemical.chemi_criticalMass" placeholder="临界量(吨)" style="width:18%"></el-input>
+            <span class="icon" style="color:red">
+              <!-- 判断这个数据是否在原来的数据中，如果在那就用删除标志，如果没在那就用移除标志 -->
+              <i v-show="oldEditForm.chemicalInfo[index]!=undefined?true:false" class='el-icon-delete' @click="deleteData(chemical,'one',index)"></i>
+              <i v-show="oldEditForm.chemicalInfo[index]!=undefined?false:true" class='el-icon-remove-outline' @click="removeDomain(chemical,editForm)"></i>
+            </span>
+          </el-row>
+        </el-form-item>
+        <el-form-item style="text-align:center">
+          <p class="icon" @click="addDomain('edit')">
+            <i class="el-icon-circle-plus-outline">添加化学品存储信息</i>
+          </p>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="editFormVisible = false;resetForm('editFormRef')">取 消</el-button>
+        <el-button type="primary" @click="editData">确 定</el-button>
+      </div>
+    </el-dialog>
+    removeDomain(item, form) {
+      let index = form.chemicalInfo.indexOf(item)
+      if (index !== -1) {
+        form.chemicalInfo.splice(index, 1)
+      }
+    },
+    addDomain(type) {
+      //如果是添加数据
+      if (type === 'add') {
+        this.addForm.chemicalInfo.push({
+          chemi_name: '',
+          chemi_device: '',
+          chemi_allowance: '',
+          chemi_criticalMass: '',
+        })
+      } else {
+        //如果是修改数据
+        this.editForm.chemicalInfo.push({
+          chemi_name: '',
+          chemi_device: '',
+          chemi_allowance: '',
+          chemi_criticalMass: '',
+        })
+      }
+    },
+
+
+    //后台
+    router.post('/addChemical', async (req,res)=>{
+	// 有下拉框搜索选择
+	try{
+		let {addForm} = req.body
+			let form = addForm.chemicalInfo
+			form.forEach(item=>{
+				item.chemi_unitId = addForm.chemi_unitId
+			})
+		  await Chemical.insertMany(form)
+	    res.send({meta:{msg:"添加化学品信息成功",err:0}})
+			return
+	}
+	catch(e){
+		console.log(e);
+		res.send({meta:{msg:"添加或修改化学品信息成功",err:-1}})
+		return;
+	}
+})
+
+
+
+
+/**
+ * @api {post} /hazard/deleteChemical 删除化学品存储信息
+ * @apiGroup Hazard
+ **/
+ router.delete('/deleteChemical',async (req,res)=>{
+	try{
+		var {deleteData,type} = req.query
+		if(type=='all'){
+			await Chemical.deleteMany({chemi_unitId:deleteData})
+		}	
+		else if(type=='one'){
+			deleteData = JSON.parse(deleteData) // 因为query是以JSON字符串格式传递
+			await Chemical.deleteOne(deleteData)
+		}
+    res.send({meta:{err:0,msg:"删除成功"}})
+		return
+	 }
+	catch(e){
+		console.log(e)
+		res.send({meta:{err:-1,msg:'删除失败'}})
+	}
+ })
+ 
+
+
+ <template>
+  <div class = "chart">
+		<div style="width:45%;height:500px;">
+			<h1>各活动的风险频率分布:</h1>
+    	<div id="bar" style="width:100%;height:95%"></div>
+		</div>
+		<div style="width:45%;height:600px">
+			<h1>各风险的频率及百分比:</h1>
+		<div id="pie" style="width:100%;height:100%;"></div>
+		</div>
+  </div>
+</template>
+
+<script>
+import echarts from 'echarts'
+
+export default {
+  data() {
+    return {
+      activeName: 'first'
+    }
+  },
+  mounted() {
+    //此时页面上的元素，已经被渲染完毕了
+    //基于准备好的DOM,初始化echarts实例
+    var barChart = echarts.init(document.getElementById('bar'))
+    //准备数据和配置项
+    var bar = {
+      legend: {},
+			tooltip: {},
+      dataset: {
+        dimensions: ['risk', '低风险', '中风险', '高风险', '极高风险'],
+        source: [
+          { risk: '进料', 低风险: 1, 中风险: 9, 高风险: 7, 极高风险: 2 },
+          { risk: '出料', 低风险: 0, 中风险: 2, 高风险: 3, 极高风险: 1 },
+          { risk: '投料', 低风险: 1, 中风险: 6, 高风险: 5, 极高风险: 0 },
+          { risk: '使用叉车', 低风险: 1, 中风险: 4, 高风险: 3, 极高风险: 5 }
+				],
+      },
+      xAxis: { type: 'category' },
+			yAxis: {},
+      series: [
+        { type: 'bar', color: '#9AFF9A' },
+        { type: 'bar', color: '#87CEFA' },
+        { type: 'bar', color: '#FFD700' },
+        { type: 'bar', color: '#EE4000' }
+      ]
+    }
+    //展示数据
+    barChart.setOption(bar)
+	
+	var pieChart =  echarts.init(document.getElementById('pie'))
+		//准备数据和配置项
+  var pie = {
+    tooltip: {
+        trigger: 'item',
+        formatter: '{a} <br/>{b}: {c} / {d}%'
+    },
+    legend: {
+        orient: 'vertical',
+        left: 10,
+        data: ['低风险','中风险','高风险','极高风险']
+    },
+    series: [
+        {
+            name: '风险频率/百分比',
+            type: 'pie',
+            radius: ['50%', '70%'],
+						avoidLabelOverlap: false,
+						top:-50,
+						left:50,
+            label: {
+                normal: {
+                    show: false,
+                    position: 'center'
+                },
+                emphasis: {
+                    show: true,
+                    textStyle: {
+                        fontSize: '30',
+                        fontWeight: 'bold'
+                    }
+                }
+            },
+            color:['#9AFF9A','#87CEFA', '#FFD700', '#EE4000'],
+            labelLine: {
+                normal: {
+                    show: false
+                }
+            },
+            data: [
+                {value: 15, name: '低风险'},
+                {value: 49, name: '中风险'},
+                {value: 30, name: '高风险'},
+                {value: 5, name: '极高风险'},
+            ]
+        }
+    ]
+};
+ pieChart.setOption(pie)
+	}
+}
+</script>
+
+<style>
+.chart{
+	display: flex;
+	flex-direction: row;
+	flex-wrap:wrap;
+	justify-content: space-around
+}
+
+</style>

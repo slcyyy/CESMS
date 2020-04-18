@@ -1,31 +1,12 @@
 <template>
   <div>
-		<el-tag type="warning" style="width:100%;">选择两个下拉框之一,查看"填表人"/"企业"填写状态</el-tag>
-    <el-row>
-			<el-col :span="3"  style="marign-top:-20px">
-				<p>查看专家填写状态:</p>
-			</el-col>
-      <el-col :span="5" mar>
-        <el-select v-model="value" placeholder="请选择">
-          <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          ></el-option>
-        </el-select>
-      </el-col>
-      <el-col :span="3"	>
-         <el-button type="primary"  @click="dialogFormVisible = true"  icon="el-icon-search"></el-button>
-      </el-col>
-    </el-row>
+          <BreadCrumbNavi>
+      <template #secondPath>企业评分</template>
+      <template #thirdPath>查看填写状态</template>
+    </BreadCrumbNavi>
+    <el-card>
 
-       <el-row>
-				 	<el-col :span="3" style="marign-top:-5px">
-				<p >查看企业填写状态:</p>
-			</el-col>
-      <el-col :span="5">
-        <el-select v-model="value" placeholder="请选择">
+      <el-select v-model="value" placeholder="请选择" style="margin-top:10px">
           <el-option
             v-for="item in options"
             :key="item.value"
@@ -33,16 +14,74 @@
             :value="item.value"
           ></el-option>
         </el-select>
-      </el-col>
-      <el-col :span="3">
-         <el-button type="primary"  @click="dialogFormVisible = true"  icon="el-icon-search"></el-button>
-      </el-col>
-    </el-row>
+        <el-table
+    :data="tableData"
+    height="400"
+    border
+    style="width: 100%;margin-top:30px">
+    <el-table-column
+      prop="date"
+      label="公司"
+      width="180">
+    </el-table-column>
+    <el-table-column
+      prop="name"
+      label="已填写"
+      >
+    </el-table-column>
+    <el-table-column
+      prop="address"
+      label="进行中">
+    </el-table-column>
+  </el-table>
+  </el-card>
+   
+
+  
   </div>
 </template>
 
 <script>
-export default {}
+import BreadCrumbNavi from '@/components/globalChildComp/breadCrumbNavi'
+export default {
+  data(){
+    return{
+      	options: [{
+          value: '选项1',
+          label: '小罗'
+        }, {
+          value: '选项2',
+          label: '双皮奶'
+        }, {
+          value: '选项3',
+          label: '蚵仔煎'
+        }, {
+          value: '选项4',
+          label: '龙须面'
+        }, {
+          value: '选项5',
+          label: '北京烤鸭'
+        }],
+        value:'',
+        tableData: [{
+          date: '国服',
+          name: '安全基础管理安全风险隐患排查表',
+          address: '无'
+        }, {
+          date:'阿里',
+          name: '安全基础管理安全风险隐患排查表',
+          address: '装置运行安全风险隐患排查表'
+        }, {
+          date: '腾讯',
+          name: '安全基础管理安全风险隐患排查表 装置运行安全风险隐患排查表',
+          address: '无'
+        }]
+    }
+  },
+  components:{
+     BreadCrumbNavi
+  }
+}
 </script>
 
 <style>

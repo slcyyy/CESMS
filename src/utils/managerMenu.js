@@ -5,7 +5,7 @@ const managerMenu= [
 		path:'users',
 		children:[
 			{id:11,name:'账号与安全',path:'account'},
-			{id:12,name:'个人信息',path:'vertifyEmail'}
+			{id:12,name:'个人信息',path:'info'}
 		]
 	},
 	{
@@ -25,7 +25,7 @@ const managerMenu= [
 		children:[
 			{id:31,name:'重大危险源判断',path:'majorHazard'},
 			{id:32,name:'风险评估',path:'hazardAssess'},
-			{id:33,name:'自定义安全计划表',path:'hazardAssess'}
+			{id:33,name:'自定义安全计划表',path:'safetyPlan'}
 		]
 	},
 	{
@@ -35,10 +35,8 @@ const managerMenu= [
 		children:[	
 			{id:41,name:'填写评分表',path:'fillTable'},
 			{id:42,name:'查看填写状态',path:'getFillStatus'},
-			{id:43,name:'导出企业评价内容',path:'getEvaluateContent'}, //specific fill status
 			{id:44,name:'查看评分结果',path:'getScore'}, //last score
 			{id:45,name:'导入评价表',path:'importEvaluateTable'}, 
-			{id:46,name:'导出评价文档',path:'exportEvaluateDoc'} //word
 		]
 	},
 	{

@@ -1,8 +1,11 @@
 <template>
   <div>
-    <el-card >
-    
 
+    <BreadCrumbNavi>
+      <template #secondPath>档案管理</template>
+      <template #thirdPath>法律法规制度标准</template>
+    </BreadCrumbNavi>
+    <el-card >
       <el-button type="primary" @click="addProperVisible= true">添加条目</el-button>
     <el-table
       :data="lawData"
@@ -15,7 +18,7 @@
       <el-table-column prop="law_id" label="标准编号"  width="180"></el-table-column>
       <el-table-column prop="law_effectiveData" label="生效日期"  width="110"></el-table-column>
       <el-table-column prop="law_issueDepa" label="颁布部门"  width="180"></el-table-column>
-			<el-table-column prop="law_access" label="获取渠道"  width="80"></el-table-column>
+			<el-table-column label="获取渠道"  width="80"> <el-link type="primary">网上下载</el-link></el-table-column>
       <el-table-column prop="law_identifyData" label="识别日期"  width="110"></el-table-column>
       <el-table-column prop="law_useDepa" label="适用部门"  width="110"></el-table-column>
 			<el-table-column prop="law_note" label="备注" ></el-table-column>
@@ -49,9 +52,10 @@
         <el-form-item label="颁布部门" :label-width="formLabelWidth" prop="law_issueDepa">
           <el-input v-model="addData.law_issueDepa" autocomplete="off"></el-input>
         </el-form-item>
-        <!-- <el-form-item label="获取渠道" :label-width="formLabelWidth" prop="law_access">
-          <el-input v-model="addData.law_access" ></el-input>
-        </el-form-item> -->
+        <el-form-item label="获取渠道" :label-width="formLabelWidth">
+       
+         
+        </el-form-item>
         <el-form-item label="识别日期" :label-width="formLabelWidth" prop="law_identifyData">
           <el-input  v-model="addData.law_identifyData"></el-input>
         </el-form-item>
@@ -72,6 +76,7 @@
 </template>
 
 <script>
+import BreadCrumbNavi from '@/components/globalChildComp/breadCrumbNavi'
 export default {
   data() {
     return {
@@ -104,6 +109,10 @@ export default {
   created(){
     this.getLaws()
   },
+   components:{
+      BreadCrumbNavi,
+  
+    },
   methods: {
     formatter(row, column) {
       return row.address

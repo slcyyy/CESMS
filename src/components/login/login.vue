@@ -1,6 +1,6 @@
 <template>
   <div class="login-wrap">
-    <h1 class="cms-title">XX化工企业安全管理系统</h1>
+    <h1 class="cms-title">化工企业安全管理系统</h1>
     <el-form ref="loginFormRef" class="login-form" label-position="left" 
     label-width="60px" :model="formData" :rules="loginFormRules" >
       <h2 class="login-title">用户登录</h2>
@@ -12,6 +12,7 @@
       <el-form-item label="密码:" prop = "pwd" >
         <el-input v-model="formData.pwd" type="password" @keyup.enter.native = "login"></el-input>
       </el-form-item>
+      <p style="font-size:14px;">忘记密码？</p>
         <el-button @click="login" class="login-btn" type="primary" style="margin-bottom:30px;">登录</el-button>
     </el-form>
   </div>

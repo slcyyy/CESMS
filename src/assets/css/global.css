@@ -3,6 +3,7 @@ html,body,#app{
   padding:0;
   margin:0;
   /* font-size: 16px; */
+  overflow: hidden;
 }
 
 .el-breadcrumb{
@@ -17,7 +18,7 @@ html,body,#app{
 } */
 
 .box-card{
-  margin-bottom: 10px;
+  margin-top: 10px;
 }
 
 .el-row{
@@ -71,4 +72,20 @@ th,td{
 /* 为了去标题框 */
 :focus{
   outline:0;
+}
+
+.horibox{
+  display:flex;
+  justify-content:space-between;
+}
+
+.el-icon-more{
+  color:red;
+  margin-right:10px;
+  font-size:20px;
+}
+
+.scrolldiv{
+  height:380px;
+  overflow-y:auto
 }

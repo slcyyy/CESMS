@@ -1,48 +1,41 @@
 <template>
-<div>
-<BreadCrumbNavi>
-      <template #secondPath>个人管理</template>
-      <template #thirdPath>个人信息编辑</template>
-    </BreadCrumbNavi>
 
-<el-card>
-  <div class="pwd-wrap">
+  <div class="info-wrap">
     <el-form
       :model="accountForm"
       status-icon
       :rules="rules"
-      ref="accountForm"
+      ref="personForm"
       label-width="100px"
-      class="pwd-form"
+      class="info-form"
     >
-      <el-form-item label="姓名" prop="pwd">
-        <el-input type="text" v-model="accountForm.a"  disabled></el-input>
+      <el-form-item label="姓名" >
+        <el-input type="text" v-model="personForm.name" ></el-input>
       </el-form-item>
-      <el-form-item label="性别" prop="checkPwd">
-        <el-input type="text" v-model="accountForm.b" disabled></el-input>
+      <el-form-item label="性别">
+          <el-input type="text" v-model="personForm.sex" ></el-input>
       </el-form-item>
-       <el-form-item label="部门" prop="checkPwd">
-        <el-input type="text" v-model="accountForm.c" disabled></el-input>
+      <el-form-item label="部门" prop="checkPwd">
+        <el-input type="text" v-model="personForm.apartment" ></el-input>
       </el-form-item>
-       <el-form-item label="身份证号码" prop="checkPwd">
-        <el-input type="text" v-model="accountForm.d" ></el-input>
+      <el-form-item label="身份证号码">
+          <el-input type="text" v-model="personForm.IDCard" ></el-input>
       </el-form-item>
-       <el-form-item label="手机号码" prop="checkPwd">
-        <el-input type="text"  v-model="accountForm.f" ></el-input>
+       <el-form-item label="手机号码">
+          <el-input type="text" v-model="personForm.phone" ></el-input>
       </el-form-item>
+    
       <el-form-item style="text-align:center">
-        <el-button type="primary" @click="submitForm('accountForm')">提交</el-button>
+        <el-button type="primary" @click="submitForm('personForm')">提交</el-button>
       </el-form-item>
     </el-form>
-    </div>
-    </el-card>
   </div>
 
 </template>
 
 <script>
-import BreadCrumbNavi from '@/components/globalChildComp/breadCrumbNavi'
-export default {
+
+export default {      
   data() {
     var validatePass = (rule, value, callback) => {
       if (value === '') {
@@ -65,15 +58,9 @@ export default {
         }
       };
     return {
-      accountForm: {
-        pwd: '',
-        checkPwd: '',
-        a:'小罗',
-        b:'女',
-        c:'技术部',
-        d:'',
-        f:'',
-
+      personForm: {
+        user_name:'',
+        user_
       },
       rules: {
         pwd: [
@@ -84,20 +71,29 @@ export default {
         checkPwd: [{ validator: validatePass2, trigger: 'blur' }]
       }
     }
-  },components:{
-      BreadCrumbNavi,
-  
-    },
+  },
+  methods:{
+       submitForm(formName) {
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            alert('submit!');
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
+      }
+  }
 }
 </script>
 <style>
-.pwd-wrap{
+.info-wrap{
 	height:100%;
   display: flex;
 	justify-content: center;
 	align-items: center;
 }
-.pwd-form{
+.info-form{
 	width:500px;
 	border-radius:5px;
   padding:10px 30px;

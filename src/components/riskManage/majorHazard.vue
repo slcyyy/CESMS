@@ -5,10 +5,12 @@
       <template #thirdPath>重大危险源识别和分级</template>
     </BreadCrumbNavi>
     <el-card>
-    <el-tabs v-model="activeName">
-    <el-tab-pane label="重大危险源辨识结果" name="first">
-      <Identify></Identify>
+
+    <el-tabs v-model="activeName" style="margin-top:-10px" >
+    <el-tab-pane label="重大危险源辨识结果" name="first" style="margin-top:-10px" >
+      <IdentifyTable v-if="showTable" ></IdentifyTable>
     </el-tab-pane>
+
     <el-tab-pane label="重大危险源分级" name="second">
       <Classify></Classify>  
     </el-tab-pane> 
@@ -22,14 +24,17 @@
 
 <script>
 import BreadCrumbNavi from '@/components/globalChildComp/breadCrumbNavi'
-import Identify from '@/components/riskManage/majorHazChild/identify'
+import IdentifyTable from '@/components/riskManage/majorHazChild/identifyTable'
 import Classify from  '@/components/riskManage/majorHazChild/classify'
 import Basis from '@/components/riskManage/majorHazChild/basis'
 export default {
  data(){
 	 return{
+     buttonColor1:'#66b1ff',
+     buttonColor2:'#ffffff',
+     showTable:true,
      activeName: 'first',
-		  tableData: [{
+		 tableData: [{
           id: '12987122',
           name: '王小虎',
           amount1: '234',
@@ -64,38 +69,24 @@ export default {
     },
     components:{
       BreadCrumbNavi,
-      Identify,
+      IdentifyTable,
       Classify,
       Basis
     },
     methods: {
-      arraySpanMethod({ row, column, rowIndex, columnIndex }) {
-        if (rowIndex % 2 === 0) {
-          if (columnIndex === 0) {
-            return [1, 2];
-          } else if (columnIndex === 1) {
-            return [0, 0];
-          }
-        }
-      },
-
-      objectSpanMethod({ row, column, rowIndex, columnIndex }) {
-        if (columnIndex === 0) {
-          if (rowIndex % 2 === 0) {
-            return {
-              rowspan: 2,
-              colspan: 1
-            };
-          } else {
-            return {
-              rowspan: 0,
-              colspan: 0
-            };
-          }
-        }
+      switchData(){
+      this.showTable= !this.showTable
+      if(this.showTable){
+        this.buttonColor1='#66b1ff'
+        this.buttonColor2='#ffffff'
+      }
+      else{
+        this.buttonColor1='#ffffff'
+        this.buttonColor2='#66b1ff'
       }
     }
   }
+}
 	 
  
 </script>
