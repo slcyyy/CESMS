@@ -1,8 +1,8 @@
 <template>
   <div>
       <p style="font-weight:bold;">工作危害分析法（JHA）等级判定：风险度R=可能性L×后果严重性S</p>
-      <el-collapse v-model="activeName">
-        <el-collapse-item title="可能性等级判断" name="1" >
+      <el-collapse v-model="activeName" class="scrolldiv">
+        <el-collapse-item title="可能性等级判断" name="1"  >
           <el-table
             :data="LRule"
             border
@@ -46,7 +46,7 @@
         </el-collapse-item>
       </el-collapse>
   </div>
-</template>
+</template>     
 
 <script>
 export default {
@@ -125,7 +125,7 @@ export default {
       measureRule: [
         {
           R: '<4',
-          level: '轻微或可忽略的风险',
+          level: '轻微风险',
           measure: '无需采用控制措施，但需要保存记录',
           period: '引起重视，日常岗检监管'
         },
@@ -142,14 +142,14 @@ export default {
           period: '1~2年内治理'
         },
         {
-          R: '15~16',
+          R: '13~16',
           level: '重大风险',
           measure:
             '采取紧急措施降低风险，建立运行控制程序，定期立即或近期整改检查、测量及评估',
           period: '立即或近期整改'
         },
         {
-          R: '20~25',
+          R: '17~25',
           level: '巨大风险',
           measure: '在采取措施降低危害前，不能继续作业，对改进措施进行评估',
           period: '立刻整改'

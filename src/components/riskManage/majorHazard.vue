@@ -7,7 +7,7 @@
     <el-card>
 
     <el-tabs v-model="activeName" style="margin-top:-10px" >
-    <el-tab-pane label="重大危险源辨识结果" name="first" style="margin-top:-10px" >
+    <el-tab-pane label="重大危险源辨识" name="first"  >
       <IdentifyTable v-if="showTable" ></IdentifyTable>
     </el-tab-pane>
 

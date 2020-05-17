@@ -1,11 +1,11 @@
-const managerMenu= [
+const Menu= [
 	{
 		id:1,
 		name:'个人管理',
 		path:'users',
 		children:[
-			{id:11,name:'账号与安全',path:'account'},
-			{id:12,name:'个人信息',path:'info'}
+			{id:11,name:'修改密码',path:'account'},
+			{id:12,name:'个人信息',path:'personalInfo'}
 		]
 	},
 	{
@@ -15,7 +15,6 @@ const managerMenu= [
 		children:[
 			{id:21,name:'危险化学品管理',path:'chemicals'},
 			{id:22,name:'法律法规标准规范',path:'laws'},
-			{id:23,name:'作业安全证',path:'orgnization'},
 		]
 	},
 	{
@@ -23,7 +22,7 @@ const managerMenu= [
 		name:'风险管理',
 		path:'risk',
 		children:[
-			{id:31,name:'重大危险源判断',path:'majorHazard'},
+			{id:31,name:'重大危险源辨识和分级',path:'majorHazard'},
 			{id:32,name:'风险评估',path:'hazardAssess'},
 			{id:33,name:'自定义安全计划表',path:'safetyPlan'}
 		]
@@ -34,20 +33,20 @@ const managerMenu= [
 		path:'grade',
 		children:[	
 			{id:41,name:'填写评分表',path:'fillTable'},
-			{id:42,name:'查看填写状态',path:'getFillStatus'},
-			{id:44,name:'查看评分结果',path:'getScore'}, //last score
-			{id:45,name:'导入评价表',path:'importEvaluateTable'}, 
+			{id:42,name:'查看填写情况',path:'getFillStatus'},
+			{id:43,name:'查看评分结果',path:'getScore'}, //last score
+			{id:44,name:'导入评价表',path:'importEvaluateTable'}, 
 		]
 	},
 	{
 		id:5,
-		name:'用户管理',
+		name:'管理员设置',
 		path:'manager',
 		children:[
-			{id:51,name:'用户列表',path:'usersList'},
-			{id:52,name:'权限列表',path:'roleList'},
+			{id:51,name:'用户管理',path:'usersList'},
+			{id:52,name:'权限管理',path:'roleList'},
 		]	
 	}
 ]
 
-export default managerMenu
+export default Menu

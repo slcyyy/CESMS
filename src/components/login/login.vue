@@ -12,7 +12,7 @@
       <el-form-item label="密码:" prop = "pwd" >
         <el-input v-model="formData.pwd" type="password" @keyup.enter.native = "login"></el-input>
       </el-form-item>
-      <p style="font-size:14px;">忘记密码？</p>
+      <p class="forget" @click="forget">忘记密码？</p>
         <el-button @click="login" class="login-btn" type="primary" style="margin-bottom:30px;">登录</el-button>
     </el-form>
   </div>
@@ -50,12 +50,22 @@ export default {
           window.sessionStorage.setItem("token",res.token);
           window.sessionStorage.setItem("userId",res.id)
           window.sessionStorage.setItem("roleId",res.roleId)
+          window.sessionStorage.setItem('powerId',res.powers)
           this.$router.push('/home')
         }
+        else if(res.meta.err== -2){
+          return this.$message.error('工号或密码错误')
+        }
         else{
-           return this.$message.error('登录失败！')
+          return this.$message.error('系统内部失败！')
         }
       })
+    },
+    forget(){
+      let routeUrl = this.$router.resolve({
+        path: '/forget',
+      })
+      window.open(routeUrl.href, '_blank')
     }
   }
 }
@@ -94,5 +104,11 @@ export default {
 .register-link{
   position:relative;
   left:80%;
+}
+.forget{
+  font-size:14px;
+}
+.forget:hover{
+  color:slateblue
 }
 </style>

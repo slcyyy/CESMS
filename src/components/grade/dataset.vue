@@ -16,8 +16,6 @@
         class="upload"
         ref="uploadFile"
         action
-        :on-preview="handlePreview"
-        :on-remove="handleRemove"
         :file-list="fileList"
         :auto-upload="false"
         :limit="1"
@@ -33,26 +31,23 @@
         <div slot="tip" class="el-upload__tip">只能上传1个xlsx文件</div>
       </el-upload>
       <div style="margin-top:30px">
-      <el-divider content-position="right" style="font-size:13px;">设定参与评分的企业</el-divider>
+        <el-divider content-position="right" style="font-size:13px;">设定参与评分的企业</el-divider>
       </div>
-        <div style="margin-bottom:10px;">  
-          <el-input
-            placeholder="请输入企业名称（以/分割）"
-            class="input-with-select"
-            v-model="companyName"
-            clearable
-            disabled=false
-          >
-          </el-input>
-       </div>
-    
-              <el-button
-                type="primary"
-            
-              >修改数据</el-button>
- 
-           <el-button type="success" >提交数据</el-button>
+      <div style="margin-bottom:10px;">
+        <el-input
+          placeholder="请输入企业名称（以/分割）"
+          class="input-with-select"
+          v-model="companyName"
+          clearable
+          :disabled="isEdit"
+        ></el-input>
+      </div>
+
+      <el-button type="primary" @click="isEdit=false">修改数据</el-button>
+      <el-button type="success" @click="changeCompany">提交数据</el-button>
     </el-card>
+
+
     <el-dialog title="提示" :visible.sync="dialogVisible" width="30%">
       <span>确定使用该评分表文件？（该文件会覆盖旧评分表文件）</span>
       <span slot="footer" class="dialog-footer">
@@ -72,8 +67,8 @@ export default {
       tip: '',
       fileUrl: '',
       dialogVisible: false,
-      companyName:'国服/阿里/腾讯',
-      isEdit:false
+      companyName:'',
+      isEdit: false,
     }
   },
   created() {
@@ -87,11 +82,12 @@ export default {
       const { data: res } = await this.$http.get('/grade/getPresetData')
       if (res.err == -1) this.tip = res.meta.$msg
       this.fileUrl = this.$http.defaults.baseURL + res.url
-      for(let i=0;i<res.company;i++){
-        this.companyName+=res.company[i].company_name
-        this.companyName+='/'
+      for (let i = 0; i < res.company.length; i++) {
+        this.companyName += res.company[i].company_name
+        if(i+1!=res.company.length)
+          this.companyName += '/'
       }
-      if(this.companyName!=null && this.companyName!=undefined)
+      if (this.companyName != null && this.companyName != undefined)
         this.isEdit = true
     },
     async upload() {
@@ -118,14 +114,26 @@ export default {
         return this.$message.success('评分表上传成功')
       } else return this.$message.error('评分表上传失败')
     },
-    handleRemove(file, fileList) {
-      console.log(file, fileList)
-    },
-    handlePreview(file) {
-      console.log(file)
-    },
     handleExceed() {
       return this.$message.error('文件个数超出限制')
+    },
+    async changeCompany(){
+        let t = await this.$confirm(
+        '是否更改？请注意更改公司数据后所有的评分表填写数据将会被清空',
+        '提示',
+          {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }
+        ).catch(err => err)
+      if (t !== 'confirm') return
+       const { data: res } = await this.$http.post('/grade/changeCompany', {companyName:this.companyName})
+       if (res.meta.err == -1) return this.$message.error('修改公司数据失败')
+       this.isEdit = true
+      return this.$message.success('修改公司数据成功')
+
+       
     }
   }
 }

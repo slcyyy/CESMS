@@ -18,7 +18,7 @@
       <el-table border style="width: 100%" align="center" :data="roleList" :cell-style="cellStyle"
         :header-cell-style="rowClass">
         <el-table-column prop="role_id" label="角色ID" width="80"></el-table-column>
-        <el-table-column prop="role_name" label="角色名称" width="200"></el-table-column>
+        <el-table-column prop="role_name" label="角色名称" width="400"></el-table-column>
         <el-table-column prop="role_desc" label="角色描述" width="400"></el-table-column>
         <el-table-column label="操作">
           <template v-slot="scope">
@@ -221,6 +221,12 @@ export default {
       this.powers = res.powerList
       this.role_id =role.role_id//获取当前的角色ID
       this.checkedKeys = role.role_powers.split(',') //获取当前已经拥有的权限
+      for(let i=0;i<this.checkedKeys.length;i++){
+        if(this.checkedKeys[i]<10){
+          this.checkedKeys.splice(i,1)
+          i--
+        }
+      }
       this.AssignPowerFormVisible = true
     },
   

@@ -1,8 +1,9 @@
 <template>
-  <div class="checklist">
-      <h1>{{ companyName }}-{{ tableName }}</h1>
+<div>
+  <div class="checklist" >
+      <h1 style="margin-left:10px;">{{ companyName }}-{{ tableName }}</h1>
       <el-row style="margin-left:90%"> 
-      <el-button type="warning" round  style="margin-bottom:10px" v-if="disabled" @click="disabled=false">修改</el-button> 
+      <el-button type="warning" round  style="margin-bottom:10px" v-if="this.status==0?true:false" @click="disabled=false">修改</el-button> 
       </el-row>
     <el-form :model="arrData" ref="checklistForm" :rule="checklistRule">
       <el-table
@@ -22,7 +23,8 @@
               :data="scope.row.children"
               class="expand-table"
               border
-              style="width:100%;height:100%"
+              style="width:100%"
+              height=380
             >
               <el-table-column prop="checklist_id" width="60px"></el-table-column>
               <el-table-column prop="checklist_content" label="排查内容"></el-table-column>
@@ -120,10 +122,12 @@
         <el-table-column prop="title_name" label="标题"></el-table-column>
       </el-table>
     </el-form>
-    <el-row class="rightRow">
-      <el-button type="danger" round style="margin-right:30px;">暂存</el-button>
-      <el-button type="primary" round @click="saveTable" style="margin-top:10px">提交</el-button>
+   </div>
+    <el-row class="rightRow" v-if="status>0?false:true" >
+      <el-button type="danger" round style="margin-right:30px;"  @click="saveTable('1')">暂存</el-button>
+      <el-button type="primary" round @click="saveTable('2')" style="margin-top:10px">提交</el-button>
     </el-row>
+ 
   </div>
 </template>
 
@@ -163,6 +167,7 @@ export default {
         }
       ],
       fill_userId: '',
+      status:'',
       submitData: [],
       //当点击submit后stop>0时取消自动保存
       stop: 0,
@@ -173,20 +178,12 @@ export default {
       //输入框是否能修改
       disabled:false,
       //记录是否是第一次提交
-      isRecord:false
+      temporySave:false
     }
   },
   created() {
     this.fill_userId = window.sessionStorage.getItem('userId')
     this.getChecklistData()
-  },
-  mounted() {
-    if (!window.localStorage) {
-      alert('浏览器不支持localstorage,请不要使用无痕浏览')
-    } else {
-      //自动保存数据
-      var t1 = setTimeout(this.temporySaveTable(), 120000)
-    }
   },
   methods: {
     //页面渲染前获取到评分表数据
@@ -201,44 +198,33 @@ export default {
       //获取公司ID\表ID
       this.companyId = this.$route.query.company.split(',')[0]
       this.tableId = this.$route.query.table.split(',')[0]
+      let id = this.$route.query.userId
+      if(id==undefined||id==null){
+        var { data: res } = await this.$http.get('grade/getChecklistData', {
+        params: { checklist_pId: this.tableId, fill_userId: this.fill_userId,fill_companyId:this.companyId,tableName:this.tableName }
+        })
+      }
+      else{
+        var { data: res } = await this.$http.get('grade/getChecklistData', {
+        params: { checklist_pId: this.tableId, fill_userId: id,fill_companyId:this.companyId,tableName:this.tableName }
+        })
+      }
       //从数据库中获取数据
-      const { data: res } = await this.$http.get('grade/getChecklistData', {
-        params: { checklist_pId: this.tableId, fill_userId: this.fill_userId,fill_companyId:this.companyId }
-      })
+      
       if (res.meta.err == -1) return this.$message.error('获取评分列表失败')
       //如果已经填写则把所有输入框设为禁用
-       if (res.record) {
+      this.status = res.status
+       if (res.status>=0) {
          this.disabled = true
-         this.isRecord = true
       } 
-      //  if(res.state>0)
-      //   this.disabled = true  
+      if(res.status==0){
+        this.temporySave = true //暂存的
+      }
       this.checklistData = res.cTable
       this.arrData.checklistData = this.checklistData
      
     },
-    temporySaveTable() {
-      try {
-           
-        if (this.stop > 0) {
-          clearTimeout(t2)
-        } else {
-          if (this.count > 0) {
-            this.handleData()
-            localStorage.setItem('temporySave', this.submitData)
-            //每隔两分钟保存一次数据
-            var t2 = setTimeout(this.temporySaveTable, 120000)
-            this.$message('自动保存成功')
-            console.log(new Date().getMinutes())
-          }
-
-          this.count++
-        }
-      } catch (err) {
-        console.log(err)
-        this.$message('自动保存失败')
-      }
-    },
+   
     //处理评分表填写数据
     handleData() {
       this.submitData = []
@@ -264,7 +250,7 @@ export default {
       }
     },
     //提交填写的评分表数据
-    saveTable() {
+    saveTable(type) {
       this.$refs.checklistForm.validate(async valid => {
         if (!valid) 
            return this.$message.error('还有内容未填写！')
@@ -283,10 +269,7 @@ export default {
         let seconds = d.getSeconds()  //现在几秒
         const fillTime = year+'/'+month+'/'+day+' '+hour+':'+minute
         //提交
-         console.log(this.checklistData)
-         console.log('-------')
         this.handleData()
-         console.log(this.submitData)
         let { data: res } = await this.$http.post('/grade/saveChecklist', {
           submitTable: this.submitData,
           fill_userId:this.fill_userId,
@@ -294,11 +277,19 @@ export default {
           fill_fTableId,
           fillTime,
           companyName:this.companyName,
-          tableName:this.tableName
+          tableName:this.tableName,
+          type
         })
         if (res.meta.err == -1) return this.$message.error('保存数据失败')
         this.disabled = true
-        this.$message.success('保存数据成功')
+        if(type=='2'){
+           this.status = 1
+           this.$message.success('提交成功')
+        }
+        else{
+          this.status = 0
+          this.$message.success('暂存成功')
+        }
       })
     }
   }

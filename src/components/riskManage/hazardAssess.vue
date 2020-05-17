@@ -6,7 +6,7 @@
     </BreadCrumbNavi>
         <el-card>
     <el-tabs v-model="activeName" style="margin-bottom:10px;">
-      <el-tab-pane label="风险评估结果" name="first">
+      <el-tab-pane label="风险评估" name="first">
           <Assess></Assess>
       </el-tab-pane>
       <el-tab-pane label="评估依据" name="second">
@@ -20,7 +20,6 @@
 <script>
 import BreadCrumbNavi from '@/components/globalChildComp/breadCrumbNavi'
 import Assess from '@/components/riskManage/assessChild/assess'
-import Export from '@/components/riskManage/assessChild/export'
 import Basis from '@/components/riskManage/assessChild/basis'
 export default {
   data() {
@@ -32,9 +31,7 @@ export default {
 
   components:{
     BreadCrumbNavi,
-    // Result,
     Assess,
-    Export,
     Basis
   },
 

@@ -34,16 +34,16 @@
         <el-table-column type="index" label="#" width="80"></el-table-column>
         <el-table-column prop="user_id" label="工号" width="180"></el-table-column>
         <el-table-column prop="user_name" label="姓名" width="180"></el-table-column>
-         <el-table-column prop="user_apartment" label="部门" width="180"></el-table-column>
-        <el-table-column prop="user_roleName" label="角色" width="180"></el-table-column>
-        <el-table-column prop="oprate" label="操作">
+         <el-table-column prop="user_depa" label="部门" width="180"></el-table-column>
+        <el-table-column prop="user_roleName" label="角色" ></el-table-column>
+        <el-table-column prop="oprate" label="操作" width="200">
           <template v-slot="scope">
             <el-tooltip content="查看用户信息" placement="top">
               <el-button
                 type="success"
                 icon="el-icon-view"
                 size="mini"
-                @click="showEditForm(scope.row.user_id)"
+                @click="showUserInfo(scope.row.user_id)"
               ></el-button>
             </el-tooltip>
             <el-tooltip content="编辑用户" placement="top">
@@ -88,8 +88,8 @@
         <el-form-item label="密码" prop="user_pwd">
           <el-input v-model="addForm.user_pwd" disabled></el-input>
         </el-form-item>
-        <el-form-item label="部门"  prop="user_apartment">
-          <el-input v-model="addForm.user_apartment"></el-input>
+        <el-form-item label="部门"  prop="user_depa">
+          <el-input v-model="addForm.user_depa"></el-input>
         </el-form-item>
         <el-form-item label="角色" prop="user_roleId">
           <el-select v-model="addForm.user_roleId" placeholder="请选择角色" multiple style="width:50%">
@@ -119,7 +119,7 @@
           <el-input v-model="editForm.user_name" autocomplete="off" disabled></el-input>
         </el-form-item>
         <el-form-item label="部门">
-          <el-input v-model="editForm.user_apartment" autocomplete="off" disabled></el-input>
+          <el-input v-model="editForm.user_depa" autocomplete="off" disabled></el-input>
         </el-form-item>
         <el-form-item label="角色"  prop="user_roleId">
           <el-select v-model="editForm.user_roleId" placeholder="请选择角色" style="width:50%" multiple>
@@ -135,6 +135,33 @@
       <div slot="footer" class="dialog-footer">
         <el-button @click="editFormVisible = false;resetForm('editFormRef')">取 消</el-button>
         <el-button type="primary" @click="editUser">确 定</el-button>
+      </div>
+    </el-dialog>
+
+
+     <!--查看用户对话框-->
+    <el-dialog title="查看用户" :visible.sync="viewFormVisible"  width="50%">
+      <el-form ref="editFormRef" :model="userInfoForm"  label-width="120px">
+        <!--prop名称要跟绑定的数据名字相同-->
+        <el-form-item label="工号" >
+          <el-input v-model="userInfoForm.user_id" autocomplete="off" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="姓名">
+          <el-input v-model="userInfoForm.user_name" autocomplete="off" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="部门">
+          <el-input v-model="userInfoForm.user_depa" autocomplete="off" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="身份证号">
+          <el-input v-model="userInfoForm.user_IDCard" autocomplete="off" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="手机号码">
+          <el-input v-model="userInfoForm.user_phone" autocomplete="off" disabled></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="viewFormVisible = false;">取 消</el-button>
+        <el-button type="primary" @click="viewFormVisible=false">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -158,7 +185,7 @@ export default {
         user_name: '',
         user_pwd: '123456',
         user_roleId:[],
-        user_apartment: '',
+        user_depa: '',
       },
       formLabelWidth: '60px',
       addFormRules: {
@@ -182,8 +209,10 @@ export default {
         user_id: '',
         user_name: '',
         user_roleId: [],
-        user_apartment:''
+        user_depa:''
       },
+      viewFormVisible:false,
+      userInfoForm:{},
       editFormRules: {
         user_roleId: [
           { required: true, message: '请选择用户角色', trigger: 'blur' }
@@ -209,6 +238,7 @@ export default {
       if (res.meta.err == -1) return this.$message.error('获取列表失败')
       this.total = res.total
       this.userList = res.data
+      console.log(this.userList)
     },
     handleSizeChange(newSize) {
       this.queryInfo.pageSize = newSize
@@ -261,6 +291,12 @@ export default {
         this.editFormVisible = false
         this.resetForm('editFormRef')
      })
+    },
+    async showUserInfo(id){
+      const { data: res } = await this.$http.get('users/getUserByID',{params:{user_id:id}})
+      if (res.meta.err == -1) return this.$message.error('获取用户个人信息失败')
+      this.userInfoForm = {...res.userInfo}
+      this.viewFormVisible=true
     },
     async deleteUser(id) {
       const res = await this.$confirm(
